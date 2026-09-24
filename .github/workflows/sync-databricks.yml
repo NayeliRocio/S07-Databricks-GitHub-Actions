@@ -1,0 +1,71 @@
+name: Sync Databricks Git Folder
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: databricks-git-folder-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    name: Sync GitHub to Databricks
+    runs-on: ubuntu-latest
+
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      DATABRICKS_GIT_FOLDER_PATH: ${{ secrets.DATABRICKS_GIT_FOLDER_PATH }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Check configuration
+        id: check
+        shell: bash
+        run: |
+          configured=true
+
+          if [ -z "$DATABRICKS_HOST" ]; then
+            echo "::warning::Falta el secret DATABRICKS_HOST"
+            configured=false
+          fi
+
+          if [ -z "$DATABRICKS_TOKEN" ]; then
+            echo "::warning::Falta el secret DATABRICKS_TOKEN"
+            configured=false
+          fi
+
+          if [ -z "$DATABRICKS_GIT_FOLDER_PATH" ]; then
+            echo "::warning::Falta el secret DATABRICKS_GIT_FOLDER_PATH"
+            configured=false
+          fi
+
+          echo "configured=$configured" >> "$GITHUB_OUTPUT"
+
+      - name: Verify Databricks authentication
+        if: steps.check.outputs.configured == 'true'
+        run: databricks auth describe
+
+      - name: Sync Databricks Git Folder
+        if: steps.check.outputs.configured == 'true'
+        run: |
+          databricks repos update "$DATABRICKS_GIT_FOLDER_PATH" --branch main
+          databricks repos get "$DATABRICKS_GIT_FOLDER_PATH"
+
+      - name: Configuration pending
+        if: steps.check.outputs.configured != 'true'
+        run: |
+          echo "Workflow instalado correctamente."
+          echo "Agrega DATABRICKS_HOST, DATABRICKS_TOKEN y DATABRICKS_GIT_FOLDER_PATH"
+          echo "en Settings > Secrets and variables > Actions y vuelve a ejecutar el workflow."
