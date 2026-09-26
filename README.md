@@ -4,14 +4,14 @@
 **Actividad:** S08 | AP4 | Databricks e Integraciones  
 **Fecha:** 24-09-2026
 
-Este repositorio contiene el pipeline, notebook y guía de la entrega. **Estado verificado el 26-09-2026:** el Git Folder está sincronizado en el workspace `dbc-2aa79bb9-b5b2`. El Volume fue comprobado en el workspace anterior `dbc-6d9a3ebe-2368`; se debe verificar o recrear en el workspace de entrega. Faltan tres Connections, la evidencia de CLI local y el video.
+Este repositorio contiene el pipeline, notebook y guía de la entrega. **Estado verificado el 26-09-2026:** el Git Folder está sincronizado en el workspace `dbc-2aa79bb9-b5b2`. El Volume fue comprobado en el workspace anterior `dbc-6d9a3ebe-2368`; se debe verificar o recrear en el workspace de entrega. La captura de Catalog muestra cuatro Connections (GitHub, Google Drive, Neon PostgreSQL y otra de Drive). La usuaria informó que funcionan; falta registrar su prueba y la evidencia en video, además de comprobar el Volume en este workspace.
 
 ## Estado de los cuatro puntos
 
 | Punto | Estado comprobado |
 | --- | --- |
 | GitHub + Git Folder | El repositorio está clonado en Databricks bajo `/Workspace/Users/nayeli.herrera@vallegrande.edu.pe/S07-Databricks-GitHub-Actions`, rama `main`. Sincronización verificada: `main`, commit `dd7485f9ca42c89b67286bb6ee1379c0b39aef91`, [ejecución exitosa](https://github.com/NayeliRocio/S07-Databricks-GitHub-Actions/actions/runs/36259034654). |
-| Tres Connections | En `Catalog > Settings > Connections` se observan **0 conexiones**. Cada origen requiere credenciales o una autorización real; no cuenta el Git Folder como Connection. |
+| Tres Connections | La captura del 26-09-2026 muestra cuatro: `nayeli_github`, `nayeli_google_drive`, `nayeli_neon_postgresql` y `s08_google_drive`. Hay tres tipos distintos. La usuaria informa que funcionan; conservar en video una prueba visible de cada una. |
 | CLI local | La CLI responde en PowerShell local. Falta repetir la autenticación con el host correcto y registrar la evidencia en video. |
 | Volume | Se creó `workspace.default.s08_evidencias` en el workspace anterior (`dbc-6d9a3ebe-2368`) y se verificaron `s08_integracion.png` y `s08_integracion.pdf`. Falta confirmar que el Volume y los archivos sean visibles en el workspace objetivo (`dbc-2aa79bb9-b5b2`); si no aparecen, crear allí un Volume y subirlos de nuevo. |
 
@@ -34,7 +34,7 @@ El workflow se ejecuta en cada push a `main` o manualmente desde Actions. Primer
 
 ## Tres Connections
 
-Abrir `Catalog > Settings > Connections`. La tarea exige **tres conexiones diferentes, autenticadas y verificadas**. Elegir servicios para los que existan cuentas y permisos reales (por ejemplo GitHub con OAuth App, Google Drive, una base de datos). No crear conexiones ficticias: GitHub como Git provider en Workspace no equivale a una Connection de Unity Catalog.
+Abrir `Catalog > Settings > Connections`. La tarea exige **tres conexiones diferentes, autenticadas y verificadas**. Mostrar en el video GitHub, Google Drive y Neon PostgreSQL, con una comprobación de funcionamiento de cada una. Los cuatro objetos de la captura pertenecen a Catalog > Connections; el Git Folder es una integración distinta.
 
 ## CLI en Windows
 
