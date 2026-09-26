@@ -4,15 +4,15 @@
 **Actividad:** S08 | AP4 | Databricks e Integraciones  
 **Fecha:** 24-09-2026
 
-Este repositorio contiene el pipeline, notebook y guía de la entrega. **Estado verificado el 26-09-2026:** el Git Folder y el Volume existen; la sincronización automática, las tres Connections, la CLI en el equipo local y el video aún requieren completar sus pruebas.
+Este repositorio contiene el pipeline, notebook y guía de la entrega. **Estado verificado el 26-09-2026:** el Git Folder y el Volume existen. La sincronización automática pasó en GitHub Actions; faltan tres Connections, la evidencia de CLI local y el video.
 
 ## Estado de los cuatro puntos
 
 | Punto | Estado comprobado |
 | --- | --- |
-| GitHub + Git Folder | El repositorio está clonado en Databricks bajo `/Workspace/Users/nayeli.herrera@vallegrande.edu.pe/S07-Databricks-GitHub-Actions`, rama `main`. Falta configurar los tres secrets y obtener un run exitoso del paso de sincronización. |
+| GitHub + Git Folder | El repositorio está clonado en Databricks bajo `/Workspace/Users/nayeli.herrera@vallegrande.edu.pe/S07-Databricks-GitHub-Actions`, rama `main`. Sincronización verificada: `main`, commit `dd7485f9ca42c89b67286bb6ee1379c0b39aef91`, [ejecución exitosa](https://github.com/NayeliRocio/S07-Databricks-GitHub-Actions/actions/runs/36259034654). |
 | Tres Connections | En `Catalog > Settings > Connections` se observan **0 conexiones**. Cada origen requiere credenciales o una autorización real; no cuenta el Git Folder como Connection. |
-| CLI local | Hay un script de verificación para Windows. No se ha comprobado la instalación en el equipo local. |
+| CLI local | La CLI responde en PowerShell local. Falta repetir la autenticación con el host correcto y registrar la evidencia en video. |
 | Volume | Creado `workspace.default.s08_evidencias`, ruta `/Volumes/workspace/default/s08_evidencias`. Se verificó la carga de `s08_integracion.png` y `s08_integracion.pdf`. |
 
 ## Estructura
@@ -24,10 +24,10 @@ Este repositorio contiene el pipeline, notebook y guía de la entrega. **Estado 
 
 ## Sincronización con GitHub Actions
 
-En `Settings > Secrets and variables > Actions` de este repositorio se necesitan:
+En `Settings > Secrets and variables > Actions` de este repositorio están configurados:
 
-- `DATABRICKS_HOST`: `https://dbc-6d9a3ebe-2368.cloud.databricks.com`
-- `DATABRICKS_TOKEN`: token personal válido del workspace; nunca debe publicarse en código, capturas o video.
+- `DATABRICKS_HOST`: `https://dbc-2aa79bb9-b5b2.cloud.databricks.com`
+- `DATABRICKS_TOKEN`: token personal del mismo workspace; nunca debe publicarse en código, capturas o video. Revocar cualquier token expuesto.
 - `DATABRICKS_GIT_FOLDER_PATH`: `/Workspace/Users/nayeli.herrera@vallegrande.edu.pe/S07-Databricks-GitHub-Actions`
 
 El workflow se ejecuta en cada push a `main` o manualmente desde Actions. Primero verifica los secrets y la autenticación; luego ejecuta `databricks repos update "$DATABRICKS_GIT_FOLDER_PATH" --branch main` y `databricks repos get`. **Si falta un secret, la ejecución falla**; una ejecución verde con el paso de sincronización omitido no demuestra el punto 1.
@@ -49,7 +49,7 @@ Abrir otra PowerShell y comprobar:
 
 ```powershell
 databricks -v
-databricks configure --host https://dbc-6d9a3ebe-2368.cloud.databricks.com
+databricks configure --host https://dbc-2aa79bb9-b5b2.cloud.databricks.com
 databricks auth describe
 databricks workspace list /
 databricks repos get /Workspace/Users/nayeli.herrera@vallegrande.edu.pe/S07-Databricks-GitHub-Actions
@@ -63,4 +63,4 @@ Abrir el catálogo `workspace`, schema `default`, Volume `s08_evidencias`. En su
 
 ## Entrega
 
-Grabar un video que muestre el run con **Sync Databricks Git Folder** realmente exitoso, el Git Folder actualizado, tres Connections reales, la CLI en el equipo local y ambos archivos en el Volume. Entregar el video y el enlace a este repositorio. No presentar los puntos pendientes como terminados.
+Grabar un video que muestre la [ejecución exitosa del pipeline](https://github.com/NayeliRocio/S07-Databricks-GitHub-Actions/actions/runs/36259034654), el Git Folder actualizado, tres Connections reales, la CLI en el equipo local y ambos archivos en el Volume. Entregar el video y el enlace a este repositorio. No presentar los puntos pendientes como terminados.
