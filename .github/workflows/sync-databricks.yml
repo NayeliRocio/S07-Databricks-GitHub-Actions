@@ -27,45 +27,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check required configuration
+        shell: bash
+        run: |
+          missing=0
+          for name in DATABRICKS_HOST DATABRICKS_TOKEN DATABRICKS_GIT_FOLDER_PATH; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Falta el secret $name"
+              missing=1
+            fi
+          done
+          exit "$missing"
+
       - name: Setup Databricks CLI
         uses: databricks/setup-cli@main
 
-      - name: Check configuration
-        id: check
-        shell: bash
-        run: |
-          configured=true
-
-          if [ -z "$DATABRICKS_HOST" ]; then
-            echo "::warning::Falta el secret DATABRICKS_HOST"
-            configured=false
-          fi
-
-          if [ -z "$DATABRICKS_TOKEN" ]; then
-            echo "::warning::Falta el secret DATABRICKS_TOKEN"
-            configured=false
-          fi
-
-          if [ -z "$DATABRICKS_GIT_FOLDER_PATH" ]; then
-            echo "::warning::Falta el secret DATABRICKS_GIT_FOLDER_PATH"
-            configured=false
-          fi
-
-          echo "configured=$configured" >> "$GITHUB_OUTPUT"
-
       - name: Verify Databricks authentication
-        if: steps.check.outputs.configured == 'true'
-        run: databricks auth describe
+        run: databricks current-user me
 
       - name: Sync Databricks Git Folder
-        if: steps.check.outputs.configured == 'true'
+        shell: bash
         run: |
           databricks repos update "$DATABRICKS_GIT_FOLDER_PATH" --branch main
           databricks repos get "$DATABRICKS_GIT_FOLDER_PATH"
-
-      - name: Configuration pending
-        if: steps.check.outputs.configured != 'true'
-        run: |
-          echo "Workflow instalado correctamente."
-          echo "Agrega DATABRICKS_HOST, DATABRICKS_TOKEN y DATABRICKS_GIT_FOLDER_PATH"
-          echo "en Settings > Secrets and variables > Actions y vuelve a ejecutar el workflow."
